@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HiMenu, HiX } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
+import logoImage from '/../logo.png';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -45,7 +46,7 @@ const Navbar = () => {
               <div className="w-12 h-12 lg:w-14 lg:h-14 bg-white flex items-center justify-center">
                 <span className="font-display text-2xl lg:text-3xl font-bold text-white">
                     <img 
-          					src="/../logo.png" 
+          					src={logoImage}
           					alt="Logo"
           				  />
                 </span>
