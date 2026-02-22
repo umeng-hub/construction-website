@@ -95,6 +95,20 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+// Serve React frontend build in production (for deployments without a separate web server)
+const clientBuildPath = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientBuildPath));
+
+// Catch-all: serve index.html for client-side routes (SPA fallback)
+app.get('*', (req, res) => {
+  const indexFile = path.join(clientBuildPath, 'index.html');
+  res.sendFile(indexFile, (err) => {
+    if (err) {
+      res.status(404).json({ message: 'Route not found' });
+    }
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -102,11 +116,6 @@ app.use((err, req, res, next) => {
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
 });
 
 // Start server
