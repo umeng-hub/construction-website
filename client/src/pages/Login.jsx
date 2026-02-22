@@ -37,8 +37,8 @@ const Login = () => {
     const result = await login(formData.username, formData.password);
     
     if (result.success) {
-      // Navigate will happen via useEffect when isAuthenticated changes
-      // Don't navigate here to avoid issues
+      setLoading(false);
+      navigate('/admin', { replace: true });
     } else {
       setError(result.message);
       setLoading(false);
