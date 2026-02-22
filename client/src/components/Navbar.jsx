@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HiMenu, HiX } from 'react-icons/hi';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoImage from '/../logo.png';
+import logoImage from '/logo.png';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
