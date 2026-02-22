@@ -44,10 +44,7 @@ const Navbar = () => {
             <div className="relative">
               <div className="w-12 h-12 lg:w-14 lg:h-14 bg-white flex items-center justify-center">
                 <span className="font-display text-2xl lg:text-3xl font-bold text-white">
-                  <img 
-					src="/logo.jpg" 
-					alt="Logo"
-				  />
+                  R
                 </span>
               </div>
               <div className="absolute inset-0 bg-accent-500 transform -translate-x-1 -translate-y-1 -z-10 transition-transform group-hover:translate-x-0 group-hover:translate-y-0" />
