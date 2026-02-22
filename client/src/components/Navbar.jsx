@@ -45,7 +45,7 @@ const Navbar = () => {
               <div className="w-12 h-12 lg:w-14 lg:h-14 bg-white flex items-center justify-center">
                 <span className="font-display text-2xl lg:text-3xl font-bold text-white">
                     <img 
-          					src="/logo.jpg" 
+          					src="/../logo.png" 
           					alt="Logo"
           				  />
                 </span>
