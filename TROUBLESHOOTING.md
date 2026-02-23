@@ -153,6 +153,28 @@
 
 ---
 
+### ❌ "Page Not Found" (404) on Page Refresh
+
+**Problem:** Refreshing the page (F5) on routes like `/projects`, `/contact`, `/admin` gives a 404 error.
+
+**Solutions:**
+
+1. **Development mode (Vite dev server on port 5173):**
+   - Always access the app via `http://localhost:5173` — Vite handles SPA routing automatically
+   - Do **not** access routes directly through `http://localhost:5000` in development
+   - Make sure both backend (`npm run dev` in `server/`) and frontend (`npm run dev` in `client/`) are running
+
+2. **Production mode:**
+   - Build the frontend first: `cd client && npm run build`
+   - The backend catch-all route then serves `client/dist/index.html` for all non-API routes
+   - Check backend logs for: `⚠️  Production build not found` — if you see this, run the build step
+
+3. **Check the backend logs** when a 404 occurs:
+   - You should see: `🌐 SPA fallback: /your-route` before the error
+   - If the log shows `⚠️  Production build not found`, the `client/dist/` folder is missing
+
+---
+
 ### ❌ "CORS Policy" Error
 
 **Problem:** Browser blocks requests to backend.

@@ -32,7 +32,10 @@ const app = express();
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true
+}));
 app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -102,8 +105,10 @@ app.use(express.static(clientBuildPath));
 // Catch-all: serve index.html for client-side routes (SPA fallback)
 app.get('*', (req, res) => {
   const indexFile = path.join(clientBuildPath, 'index.html');
+  console.log(`🌐 SPA fallback: ${req.path}`);
   res.sendFile(indexFile, (err) => {
     if (err) {
+      console.error(`⚠️  Production build not found at ${indexFile}. Run 'npm run build' in the client folder.`);
       res.status(404).json({ message: 'Route not found' });
     }
   });
