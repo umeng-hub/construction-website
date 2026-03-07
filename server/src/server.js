@@ -103,13 +103,31 @@ const clientBuildPath = path.join(__dirname, '../../client/dist');
 app.use(express.static(clientBuildPath));
 
 // Catch-all: serve index.html for client-side routes (SPA fallback)
+// Only applies to non-API routes so unmatched /api/* paths still get a JSON 404.
 app.get('*', (req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ message: 'API route not found' });
+  }
+
   const indexFile = path.join(clientBuildPath, 'index.html');
   console.log(`🌐 SPA fallback: ${req.path}`);
   res.sendFile(indexFile, (err) => {
     if (err) {
       console.error(`⚠️  Production build not found at ${indexFile}. Run 'npm run build' in the client folder.`);
-      res.status(404).json({ message: 'Route not found' });
+      res.status(503).send(
+        `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Client build not found</title>
+</head>
+<body>
+  <h1>Client build not found</h1>
+  <p>The React front-end has not been built yet.</p>
+  <p>Run <code>npm run build</code> from the repository root, then restart the server.</p>
+</body>
+</html>`
+      );
     }
   });
 });

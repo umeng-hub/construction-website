@@ -34,6 +34,14 @@ services:
     # ----------------------------------------------------------
     startCommand: npm start
 
+    # ----------------------------------------------------------
+    # HEALTH CHECK
+    # Render polls this path to determine if the service is healthy.
+    # Using the API health endpoint avoids false failures when the
+    # React build files are being served by Express.
+    # ----------------------------------------------------------
+    healthCheckPath: /api/health
+
     envVars:
       # ---- Runtime / server settings -------------------------
       - key: NODE_ENV

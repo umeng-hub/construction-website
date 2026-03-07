@@ -195,7 +195,11 @@ the pre-built React SPA from `client/dist/`.
 
 If you prefer to configure each service by hand, use the exact values below.
 
-**Backend Web Service**
+> **Important:** This option deploys the backend and frontend as **two separate
+> Render services**.  If you only want a single service (Express serves the API
+> *and* the React app), use **Option A** instead.
+
+**Backend Web Service** *(API only – does NOT serve the React front-end)*
 
 | Field | Value |
 |---|---|
