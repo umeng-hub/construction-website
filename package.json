@@ -1,0 +1,12 @@
+{
+  "name": "construction-website",
+  "version": "1.0.0",
+  "description": "Construction Company Website - Full Stack Application",
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "cd server && npm start"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

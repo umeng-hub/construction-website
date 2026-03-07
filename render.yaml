@@ -24,7 +24,7 @@ services:
     # 1. Install client dependencies and compile React → client/dist/
     # 2. Install server (Express) dependencies
     # ----------------------------------------------------------
-    buildCommand: cd client && npm install && npm run build && cd ../server && npm install
+    buildCommand: npm run build
 
     # ----------------------------------------------------------
     # START COMMAND
@@ -32,7 +32,7 @@ services:
     # The Express server serves the API on /api/* and the React
     # SPA from client/dist/ for every other route.
     # ----------------------------------------------------------
-    startCommand: cd server && npm start
+    startCommand: npm start
 
     envVars:
       # ---- Runtime / server settings -------------------------
