@@ -33,7 +33,7 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || '*',
   credentials: true
 }));
 app.use(compression());
@@ -46,45 +46,43 @@ const uploadsPath = path.join(__dirname, '../uploads');
 app.use('/uploads', express.static(uploadsPath));
 console.log('📁 Serving uploads from:', uploadsPath);
 
-// Root API route
+// Root route - IMPORTANT!
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Prestige Build Construction API',
+    status: 'running',
+    version: '1.0.0'
+  });
+});
+
+// Root API route - IMPORTANT!
 app.get('/api', (req, res) => {
   res.json({
     message: 'Prestige Build Construction API',
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
-      projects: {
-        list: 'GET /api/projects',
-        single: 'GET /api/projects/:id',
-        create: 'POST /api/projects',
-        update: 'PUT /api/projects/:id',
-        delete: 'DELETE /api/projects/:id'
-      },
-      services: {
-        list: 'GET /api/services',
-        single: 'GET /api/services/:slug',
-        create: 'POST /api/services',
-        update: 'PUT /api/services/:id',
-        delete: 'DELETE /api/services/:id'
-      },
-      contacts: {
-        list: 'GET /api/contacts',
-        create: 'POST /api/contacts',
-        updateStatus: 'PATCH /api/contacts/:id/status',
-        delete: 'DELETE /api/contacts/:id'
-      },
-      uploads: {
-        single: 'POST /api/uploads/single',
-        multiple: 'POST /api/uploads/multiple',
-        list: 'GET /api/uploads',
-        delete: 'DELETE /api/uploads/:filename'
-      }
-    },
-    documentation: 'See README.md for full API documentation'
+      projects: '/api/projects',
+      services: '/api/services',
+      contacts: '/api/contacts',
+      testimonials: '/api/testimonials',
+      stats: '/api/stats',
+      uploads: '/api/uploads',
+      auth: '/api/auth'
+    }
   });
 });
 
-// API Routes
+// Health check route
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// API Routes - IMPORTANT: Register all routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contacts', contactRoutes);
@@ -93,58 +91,27 @@ app.use('/api/uploads', uploadRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/stats', statsRoutes);
 
-// Health check route
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
-});
-
-// Serve React frontend build in production (for deployments without a separate web server)
-const clientBuildPath = path.join(__dirname, '../../client/dist');
-app.use(express.static(clientBuildPath));
-
-// Catch-all: serve index.html for client-side routes (SPA fallback)
-// Only applies to non-API routes so unmatched /api/* paths still get a JSON 404.
-app.get('*', (req, res) => {
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ message: 'API route not found' });
-  }
-
-  const indexFile = path.join(clientBuildPath, 'index.html');
-  console.log(`🌐 SPA fallback: ${req.path}`);
-  res.sendFile(indexFile, (err) => {
-    if (err) {
-      console.error(`⚠️  Production build not found at ${indexFile}. Run 'npm run build' in the client folder.`);
-      res.status(503).send(
-        `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Client build not found</title>
-</head>
-<body>
-  <h1>Client build not found</h1>
-  <p>The React front-end has not been built yet.</p>
-  <p>Run <code>npm run build</code> from the repository root, then restart the server.</p>
-</body>
-</html>`
-      );
-    }
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ 
+    message: 'API route not found',
+    path: req.originalUrl
   });
 });
 
-// Error handling middleware
+// Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  console.error('Error:', err);
+  res.status(500).json({
+    message: err.message || 'Internal server error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✓ Server running on port ${PORT}`);
+  console.log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✓ API available at: http://localhost:${PORT}/api`);
 });
-
-export default app;
