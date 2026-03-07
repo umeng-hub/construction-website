@@ -99,7 +99,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve React frontend build in production (for deployments without a separate web server)
-const clientBuildPath = path.join(__dirname, '../../client/dist');
+const clientBuildPath = path.join(__dirname, '../../client');
 app.use(express.static(clientBuildPath));
 
 // Catch-all: serve index.html for client-side routes (SPA fallback)
