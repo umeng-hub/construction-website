@@ -165,6 +165,89 @@ sudo certbot renew --dry-run
 
 ## Platform-Specific Deployments
 
+### Render (Recommended – Full Stack, Single Service)
+
+This project includes a `render.yaml` file that Render picks up automatically.
+The **single Web Service** runs Express, which serves both the API (`/api/*`) and
+the pre-built React SPA from `client/dist/`.
+
+#### Option A – Auto-deploy via `render.yaml` (easiest)
+
+1. Push the repository to GitHub.
+2. In the Render dashboard click **New + → Web Service** and connect your repo.
+3. Render will detect `render.yaml` and pre-fill all settings.
+4. Set the **secret environment variables** in the Render dashboard under
+   **Environment → Add Environment Variable** (these are intentionally left
+   blank in `render.yaml` so secrets are never committed to the repo):
+
+   | Variable | Description | Example |
+   |---|---|---|
+   | `MONGODB_URI` | MongoDB Atlas connection string | `mongodb+srv://user:pass@cluster.mongodb.net/construction-company` |
+   | `JWT_SECRET` | Long random string for signing JWTs | `openssl rand -hex 32` |
+   | `CLIENT_URL` | Your Render service URL (for CORS) | `https://construction-website.onrender.com` |
+   | `SMTP_USER` | Gmail / SMTP username | `you@gmail.com` |
+   | `SMTP_PASS` | Gmail app password | *(from Google account settings)* |
+   | `CONTACT_EMAIL` | Address that receives contact-form emails | `info@example.com` |
+
+5. Click **Deploy**.
+
+#### Option B – Manual setup in the Render dashboard (no `render.yaml`)
+
+If you prefer to configure each service by hand, use the exact values below.
+
+**Backend Web Service**
+
+| Field | Value |
+|---|---|
+| Environment | `Node` |
+| Build Command | `cd server && npm install` |
+| Start Command | `cd server && npm start` |
+
+Environment variables to add:
+
+| Variable | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `PORT` | `10000` |
+| `MONGODB_URI` | *(your MongoDB Atlas URI)* |
+| `JWT_SECRET` | *(random secret string)* |
+| `CLIENT_URL` | *(URL of your frontend static site, e.g. `https://construction-frontend.onrender.com`)* |
+| `SMTP_HOST` | `smtp.gmail.com` |
+| `SMTP_PORT` | `587` |
+| `SMTP_USER` | *(your email)* |
+| `SMTP_PASS` | *(your app password)* |
+| `CONTACT_EMAIL` | *(recipient address)* |
+
+> **Note:** When using a separate frontend service the Express catch-all SPA
+> fallback in `server.js` will not be used; all non-API traffic goes to the
+> static site instead.
+
+**Frontend Static Site**
+
+| Field | Value |
+|---|---|
+| Build Command | `cd client && npm install && npm run build` |
+| Publish Directory | `client/dist` |
+
+Environment variables to add:
+
+| Variable | Value |
+|---|---|
+| `VITE_API_URL` | *(backend service URL + `/api`, e.g. `https://construction-api.onrender.com/api`)* |
+
+#### Troubleshooting Render deployments
+
+- **"Production build not found"** – this means the React app was not built
+  before the server started. Make sure your Build Command includes
+  `cd client && npm install && npm run build` **before** the server install step.
+- **CORS errors in the browser** – set `CLIENT_URL` on the backend to the exact
+  origin of your frontend (no trailing slash).
+- **App sleeping on free tier** – Render free-tier services spin down after
+  15 minutes of inactivity. Use [UptimeRobot](https://uptimerobot.com/) to
+  ping `/api/health` every 5 minutes to keep it alive.
+
+---
+
 ### Vercel (Frontend)
 
 1. Install Vercel CLI:

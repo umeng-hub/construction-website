@@ -1,10 +1,74 @@
+# ============================================================
+# Render.com deployment configuration
+# Docs: https://render.com/docs/yaml-spec
+#
+# This single Web Service runs the Express backend, which also
+# serves the pre-built React frontend from client/dist/.
+#
+# How to deploy:
+#   1. Push this repo to GitHub.
+#   2. In Render dashboard → "New +" → "Web Service" → connect repo.
+#   3. Render detects this file automatically.
+#   4. Set the secret env vars below via the Render dashboard
+#      (Environment → Add Environment Variable) before the first deploy.
+# ============================================================
+
 services:
   - type: web
-    name: construction-frontend
-    env: static
-    buildCommand: cd client && npm install && npm run build
-    staticPublishPath: client/dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    name: construction-website
+    env: node
+
+    # ----------------------------------------------------------
+    # BUILD COMMAND
+    # Runs once during each deploy before the app starts.
+    # 1. Install client dependencies and compile React → client/dist/
+    # 2. Install server (Express) dependencies
+    # ----------------------------------------------------------
+    buildCommand: cd client && npm install && npm run build && cd ../server && npm install
+
+    # ----------------------------------------------------------
+    # START COMMAND
+    # Runs after a successful build to launch the web server.
+    # The Express server serves the API on /api/* and the React
+    # SPA from client/dist/ for every other route.
+    # ----------------------------------------------------------
+    startCommand: cd server && npm start
+
+    envVars:
+      # ---- Runtime / server settings -------------------------
+      - key: NODE_ENV
+        value: production
+
+      # Render assigns a random port; Express reads process.env.PORT
+      - key: PORT
+        value: 10000
+
+      # ---- Required secrets – set these in the Render dashboard
+      #      (never commit real values here)
+
+      # MongoDB Atlas connection string
+      # Example: mongodb+srv://<user>:<pass>@cluster.mongodb.net/construction-company
+      - key: MONGODB_URI
+        sync: false
+
+      # Random secret used to sign JWTs – use a long random string
+      - key: JWT_SECRET
+        sync: false
+
+      # ---- CORS / frontend URL --------------------------------
+      # Set to your Render service URL once known, e.g.
+      # https://construction-website.onrender.com
+      - key: CLIENT_URL
+        sync: false
+
+      # ---- Email (nodemailer / contact form) ------------------
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: CONTACT_EMAIL
+        sync: false
