@@ -291,14 +291,14 @@ const Admin = () => {
                 <div className="grid md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-primary-800 mb-2">
-                      Area (sq ft)
+                      Area (sqm)
                     </label>
                     <input
                       type="text"
                       name="stats.area"
                       value={formData.stats.area}
                       onChange={handleChange}
-                      placeholder="e.g., 3,500 sq ft"
+                      placeholder="e.g., 3,500 sqm"
                       className="w-full px-4 py-3 border border-neutral-300 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 outline-none transition-all"
                     />
                   </div>
