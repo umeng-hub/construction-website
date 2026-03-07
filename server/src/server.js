@@ -33,7 +33,7 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || 'https://construction-frontend-bfbs.onrender.com',
   credentials: true
 }));
 app.use(compression());
