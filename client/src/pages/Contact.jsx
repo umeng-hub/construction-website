@@ -16,9 +16,9 @@ const Contact = () => {
 
   // Company location for Google Maps
   const companyLocation = {
-    lat: 43.6532,  // Toronto coordinates (update with your actual location)
-    lng: -79.3832,
-    address: '123 Construction Ave, Toronto, ON M5H 2N2'
+    lat: 13.413040,  // Toronto coordinates (update with your actual location)
+    lng: 121.180481,
+    address: 'Calapan City, Oriental Mindoro, PH 5200'
   };
 
   // Google Maps API key from environment
@@ -96,8 +96,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-1">Call Us</h3>
-                    <p className="text-neutral-600">+1 (555) 123-4567</p>
-                    <p className="text-neutral-600">+1 (555) 987-6543</p>
+                    <p className="text-neutral-600">+63 (917) 178-2889</p>
                   </div>
                 </div>
 
@@ -107,8 +106,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-1">Email Us</h3>
-                    <p className="text-neutral-600">info@prestigebuild.com</p>
-                    <p className="text-neutral-600">projects@prestigebuild.com</p>
+                    <p className="text-neutral-600">rdcatapang@rdccorporation.com</p>
                   </div>
                 </div>
 
@@ -202,7 +200,7 @@ const Contact = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border border-neutral-300 focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 outline-none transition-all"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+63 (999) 000-0000"
                     />
                   </div>
                 </div>
