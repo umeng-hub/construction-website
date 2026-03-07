@@ -41,7 +41,7 @@ const About = () => {
           >
             <h1 className="text-white mb-6">About Us</h1>
             <p className="text-xl text-neutral-300">
-              Building excellence since 1998. We're more than just builders—we're partners in bringing your vision to life.
+              Building excellence since 2021. We're more than just builders—we're partners in bringing your vision to life.
             </p>
           </motion.div>
         </div>
