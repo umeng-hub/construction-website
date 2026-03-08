@@ -49,7 +49,7 @@ console.log('📁 Serving uploads from:', uploadsPath);
 // Root route - IMPORTANT!
 app.get('/', (req, res) => {
   res.json({
-    message: 'Prestige Build Construction API',
+    message: 'RDC Elite Builders API',
     status: 'running',
     version: '1.0.0'
   });
@@ -58,7 +58,7 @@ app.get('/', (req, res) => {
 // Root API route - IMPORTANT!
 app.get('/api', (req, res) => {
   res.json({
-    message: 'Prestige Build Construction API',
+    message: 'RDC Elite Builders API',
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
