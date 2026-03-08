@@ -1,57 +1,34 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { servicesAPI } from '../services/api';
 
 const Services = () => {
-  const services = [
-    {
-      title: 'Residential Construction',
-      description: 'Custom home building services from concept to completion. We specialize in creating dream homes that reflect your unique style and meet your family\'s needs.',
-      features: [
-        'Custom home design and planning',
-        'High-quality materials and craftsmanship',
-        'Energy-efficient construction',
-        'Smart home integration',
-        'Warranty and after-sales support'
-      ],
-      icon: '🏡'
-    },
-    {
-      title: 'Apartment Buildings',
-      description: 'Multi-unit residential development expertise with a focus on modern design, sustainability, and community living spaces.',
-      features: [
-        'Multi-story building construction',
-        'Modern amenity planning',
-        'Sustainable building practices',
-        'Code compliance and safety',
-        'Tenant-focused design'
-      ],
-      icon: '🏢'
-    },
-    {
-      title: 'Renovations & Remodeling',
-      description: 'Transform your existing space into something extraordinary. From kitchen renovations to full home makeovers, we bring new life to old spaces.',
-      features: [
-        'Kitchen and bathroom remodeling',
-        'Home additions and extensions',
-        'Interior and exterior upgrades',
-        'Historic restoration',
-        'Minimal disruption to daily life'
-      ],
-      icon: '🔨'
-    },
-    {
-      title: 'Commercial Buildings',
-      description: 'Professional commercial construction services for offices, retail spaces, and mixed-use developments that drive business success.',
-      features: [
-        'Office building construction',
-        'Retail space development',
-        'Mixed-use properties',
-        'ADA compliance',
-        'Fast-track construction options'
-      ],
-      icon: '🏗️'
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await servicesAPI.getAll();
+      setServices(response.data);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (loading) {
+    return (
+      <div className="pt-20 lg:pt-24 min-h-screen flex items-center justify-center">
+        <div className="text-xl text-neutral-600">Loading services...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-20 lg:pt-24">
@@ -77,7 +54,7 @@ const Services = () => {
           <div className="space-y-20">
             {services.map((service, index) => (
               <motion.div
-                key={index}
+                key={service._id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -87,13 +64,13 @@ const Services = () => {
                 }`}
               >
                 <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
-                  <div className="text-6xl mb-6">{service.icon}</div>
+                  <div className="text-6xl mb-6">{service.icon || '🏗️'}</div>
                   <h2 className="text-4xl mb-6">{service.title}</h2>
                   <p className="text-lg text-neutral-600 mb-8 leading-relaxed">
                     {service.description}
                   </p>
                   <ul className="space-y-3 mb-8">
-                    {service.features.map((feature, idx) => (
+                    {service.features?.map((feature, idx) => (
                       <li key={idx} className="flex items-start space-x-3">
                         <span className="w-6 h-6 bg-accent-500 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-white text-xs">✓</span>
@@ -103,8 +80,18 @@ const Services = () => {
                     ))}
                   </ul>
                 </div>
+                
+                {/* Image Section - THIS IS THE KEY PART */}
                 <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
-                  <div className="aspect-[4/3] bg-gradient-to-br from-primary-600 to-primary-800 card-elevated" />
+                  {service.image?.url ? (
+                    <img 
+                      src={service.image.url} 
+                      alt={service.image.alt || service.title}
+                      className="w-full aspect-[4/3] object-cover card-elevated"
+                    />
+                  ) : (
+                    <div className="aspect-[4/3] bg-gradient-to-br from-primary-600 to-primary-800 card-elevated" />
+                  )}
                 </div>
               </motion.div>
             ))}
